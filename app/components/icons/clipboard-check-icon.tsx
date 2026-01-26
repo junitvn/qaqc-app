@@ -1,0 +1,40 @@
+import * as React from 'react';
+import Svg, { Path } from 'react-native-svg';
+
+interface ClipboardCheckIconProps {
+  width?: number;
+  height?: number;
+  color?: string;
+}
+
+export function ClipboardCheckIcon({ 
+  width = 36, 
+  height = 36, 
+  color = '#F97316' 
+}: ClipboardCheckIconProps) {
+  return (
+    <Svg width={width} height={height} viewBox="0 0 36 36" fill="none">
+      <Path 
+        d="M22.5 3H13.5C12.6716 3 12 3.67157 12 4.5V7.5C12 8.32843 12.6716 9 13.5 9H22.5C23.3284 9 24 8.32843 24 7.5V4.5C24 3.67157 23.3284 3 22.5 3Z" 
+        stroke={color} 
+        strokeWidth="1.5" 
+        strokeLinecap="round" 
+        strokeLinejoin="round"
+      />
+      <Path 
+        d="M24 6H27C27.7956 6 28.5587 6.31607 29.1213 6.87868C29.6839 7.44129 30 8.20435 30 9V30C30 30.7956 29.6839 31.5587 29.1213 32.1213C28.5587 32.6839 27.7956 33 27 33H9C8.20435 33 7.44129 32.6839 6.87868 32.1213C6.31607 31.5587 6 30.7956 6 30V9C6 8.20435 6.31607 7.44129 6.87868 6.87868C7.44129 6.31607 8.20435 6 9 6H12" 
+        stroke={color} 
+        strokeWidth="1.5" 
+        strokeLinecap="round" 
+        strokeLinejoin="round"
+      />
+      <Path 
+        d="M13.5 21L16.5 24L22.5 18" 
+        stroke={color} 
+        strokeWidth="1.5" 
+        strokeLinecap="round" 
+        strokeLinejoin="round"
+      />
+    </Svg>
+  );
+}

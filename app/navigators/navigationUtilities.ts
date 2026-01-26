@@ -174,12 +174,54 @@ export function useNavigationPersistence(storage: Storage, persistenceKey: strin
  * @see {@link https://reactnavigation.org/docs/navigating-without-navigation-prop/}
  * @param {unknown} name - The name of the route to navigate to.
  * @param {unknown} params - The params to pass to the route.
+ * @param {number} retries - Number of retries if route is not available (default: 10)
+ * @param {number} retryDelay - Delay between retries in ms (default: 100)
  */
-export function navigate(name: unknown, params?: unknown) {
-  if (navigationRef.isReady()) {
-    // @ts-expect-error
-    navigationRef.navigate(name as never, params as never)
+export function navigate(
+  name: unknown,
+  params?: unknown,
+  retries: number = 10,
+  retryDelay: number = 100
+) {
+  if (!navigationRef.isReady()) {
+    return;
   }
+
+  const tryNavigate = (attempt: number = 0) => {
+    try {
+      // Check if the route exists in the current navigation state
+      const state = navigationRef.getRootState();
+      const routeExists = state?.routes?.some(
+        (route) => route.name === name
+      );
+
+      if (routeExists) {
+        // Route exists, navigate immediately
+        // @ts-expect-error
+        navigationRef.navigate(name as never, params as never);
+      } else if (attempt < retries) {
+        // Route doesn't exist yet, retry after a delay
+        // This handles cases where routes are being registered asynchronously
+        setTimeout(() => tryNavigate(attempt + 1), retryDelay);
+      } else {
+        // Try navigating anyway as a last resort (might work if state check is stale)
+        // @ts-expect-error
+        navigationRef.navigate(name as never, params as never);
+      }
+    } catch (error) {
+      // If there's an actual error and we have retries left, try again
+      if (attempt < retries) {
+        setTimeout(() => tryNavigate(attempt + 1), retryDelay);
+      } else {
+        console.error(
+          `Navigation failed: Could not navigate to "${name}" after ${retries} attempts`,
+          error
+        );
+      }
+    }
+  };
+
+  tryNavigate();
 }
 
 /**

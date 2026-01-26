@@ -10,13 +10,17 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import Config from "@/config"
 import { useAuth } from "@/context/AuthContext"
 import { ErrorBoundary } from "@/screens/ErrorScreen/ErrorBoundary"
-import { LoginScreen } from "@/screens/LoginScreen"
-import { WelcomeScreen } from "@/screens/WelcomeScreen"
 import { useAppTheme } from "@/theme/context"
 
-import { DemoNavigator } from "./DemoNavigator"
+import { MainTabNavigator } from "./MainTabNavigator"
+import { SelectStoreScreen } from "@/screens/SelectStoreScreen"
+import { QuestionnairesScreen } from "@/screens/QuestionnairesScreen"
+import { ChecklistScreen } from "@/screens/ChecklistScreen"
+import { RoleSwitcherScreen } from "@/screens/RoleSwitcherScreen"
+import { ModalScreen } from "@/screens/ModalScreen"
 import type { AppStackParamList, NavigationProps } from "./navigationTypes"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
+import { LoginScreenUI } from "@/screens/LoginScreenUI"
 
 /**
  * This is a list of all the route names that will exit the app if the back button
@@ -29,6 +33,7 @@ const Stack = createNativeStackNavigator<AppStackParamList>()
 
 const AppStack = () => {
   const { isAuthenticated } = useAuth()
+  console.log("🚀 ~ AppStack ~ isAuthenticated:", isAuthenticated)
 
   const {
     theme: { colors },
@@ -43,22 +48,28 @@ const AppStack = () => {
           backgroundColor: colors.background,
         },
       }}
-      initialRouteName={isAuthenticated ? "Welcome" : "Login"}
+      initialRouteName={"Login"}
     >
       {isAuthenticated ? (
         <>
-          <Stack.Screen name="Welcome" component={WelcomeScreen} />
-
-          <Stack.Screen name="Demo" component={DemoNavigator} />
+          <Stack.Screen name="Login" component={LoginScreenUI} />
+          <Stack.Screen name="MainTabs" component={MainTabNavigator} />
+          <Stack.Screen name="SelectStore" component={SelectStoreScreen} />
+          <Stack.Screen name="Questionnaires" component={QuestionnairesScreen} />
+          <Stack.Screen name="Checklist" component={ChecklistScreen} />
+          <Stack.Screen name="RoleSwitcher" component={RoleSwitcherScreen} />
+          <Stack.Screen
+            name="Modal"
+            component={ModalScreen}
+            options={{ presentation: 'modal', title: 'Modal' }}
+          />
         </>
       ) : (
         <>
-          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Login" component={LoginScreenUI} />
         </>
       )}
 
-      {/** 🔥 Your screens go here */}
-      {/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
     </Stack.Navigator>
   )
 }

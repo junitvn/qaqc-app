@@ -58,6 +58,8 @@ export const initI18n = async () => {
   return i18n
 }
 
+export { i18n }
+
 /**
  * Builds up valid keypaths for translations.
  */

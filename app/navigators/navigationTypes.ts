@@ -15,11 +15,23 @@ export type DemoTabParamList = {
   DemoPodcastList: undefined
 }
 
+// Main Tab Navigator types (Dashboard and Profile)
+export type MainTabParamList = {
+  Dashboard: undefined
+  Profile: undefined
+}
+
 // App Stack Navigator types
 export type AppStackParamList = {
   Welcome: undefined
   Login: undefined
   Demo: NavigatorScreenParams<DemoTabParamList>
+  MainTabs: NavigatorScreenParams<MainTabParamList>
+  SelectStore: undefined
+  Questionnaires: { storeId?: string; storeName?: string; brandId?: string }
+  Checklist: { questionnaireId?: string; store?: string; storeId?: string }
+  RoleSwitcher: undefined
+  Modal: undefined
   // 🔥 Your screens go here
   // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
@@ -31,6 +43,11 @@ export type AppStackScreenProps<T extends keyof AppStackParamList> = NativeStack
 
 export type DemoTabScreenProps<T extends keyof DemoTabParamList> = CompositeScreenProps<
   BottomTabScreenProps<DemoTabParamList, T>,
+  AppStackScreenProps<keyof AppStackParamList>
+>
+
+export type MainTabScreenProps<T extends keyof MainTabParamList> = CompositeScreenProps<
+  BottomTabScreenProps<MainTabParamList, T>,
   AppStackScreenProps<keyof AppStackParamList>
 >
 

@@ -1,28 +1,55 @@
 import { createContext, FC, PropsWithChildren, useCallback, useContext, useMemo } from "react"
-import { useMMKVString } from "react-native-mmkv"
+import { useMMKVString, useMMKVObject } from "react-native-mmkv"
+
+export interface User {
+  id: string
+  name: string
+  email: string
+  emailVerified: boolean
+  image: string | null
+  createdAt: string
+  updatedAt: string
+  firstName: string
+  lastName: string
+  role: string
+  language: string
+  storeId: string | null
+  areaIds: string[]
+  isActive: boolean
+}
+
+export interface Session {
+  user: User
+  token: string
+  redirect?: string
+}
 
 export type AuthContextType = {
   isAuthenticated: boolean
   authToken?: string
   authEmail?: string
+  session: Session | null
   setAuthToken: (token?: string) => void
   setAuthEmail: (email: string) => void
+  setSession: (session: Session | null) => void
   logout: () => void
   validationError: string
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null)
 
-export interface AuthProviderProps {}
+export interface AuthProviderProps { }
 
 export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({ children }) => {
   const [authToken, setAuthToken] = useMMKVString("AuthProvider.authToken")
   const [authEmail, setAuthEmail] = useMMKVString("AuthProvider.authEmail")
+  const [session, setSession] = useMMKVObject<Session | null>("AuthProvider.session")
 
   const logout = useCallback(() => {
     setAuthToken(undefined)
     setAuthEmail("")
-  }, [setAuthEmail, setAuthToken])
+    setSession(null)
+  }, [setAuthEmail, setAuthToken, setSession])
 
   const validationError = useMemo(() => {
     if (!authEmail || authEmail.length === 0) return "can't be blank"
@@ -35,8 +62,10 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({ childre
     isAuthenticated: !!authToken,
     authToken,
     authEmail,
+    session: session ?? null,
     setAuthToken,
     setAuthEmail,
+    setSession,
     logout,
     validationError,
   }
