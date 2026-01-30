@@ -30,7 +30,6 @@ export function useAuthenticatedQuery<TData = unknown>(
       const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         method: 'GET',
         headers: getAuthHeaders(authToken),
-        credentials: 'include', // Include cookies for React Native (same as browser behavior)
       });
 
       if (!response.ok) {
@@ -64,7 +63,6 @@ export function useAuthenticatedMutation<TData = unknown, TVariables = unknown>(
         method,
         headers: getAuthHeaders(authToken),
         body: JSON.stringify(variables),
-        credentials: 'include', // Include cookies for React Native (same as browser behavior)
       });
 
       if (!response.ok) {

@@ -26,8 +26,6 @@ export function LoginScreenUI() {
 
   const signInMutation = useSignIn();
 
-  // Navigate to MainTabs when authentication state changes to true
-  // This ensures navigation happens after the navigator has updated with authenticated routes
   useEffect(() => {
     if (isAuthenticated) {
       navigate('MainTabs');
@@ -41,9 +39,8 @@ export function LoginScreenUI() {
 
     try {
       await signInMutation.mutateAsync({ email, password });
-      // Navigation will happen automatically via useEffect when isAuthenticated becomes true
+      navigate('MainTabs');
     } catch (error) {
-      // Show error alert
       Alert.alert(
         'Đăng nhập thất bại',
         error instanceof Error ? error.message : 'Đã xảy ra lỗi khi đăng nhập',
