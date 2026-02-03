@@ -62,6 +62,15 @@ const vi: Translations = {
     title: "Lựa chọn cửa hàng",
     subtitle: "Chọn cửa hàng để bắt đầu kiểm tra",
   },
+  questionnairesScreen: {
+    titleFallback: "Câu hỏi khảo sát",
+    subtitle: "Chọn mẫu báo cáo để bắt đầu kiểm tra",
+    searchPlaceholder: "Tìm kiếm mẫu báo cáo...",
+    reportTemplatesCount: "{{count}} mẫu báo cáo",
+    noName: "Không có tên",
+    emptyText: "Không tìm thấy mẫu báo cáo",
+    emptySubtext: "Thử tìm kiếm với từ khóa khác",
+  },
   selectStoreComponent: {
     brand: "Thương hiệu",
     allBrands: "Tất cả thương hiệu",

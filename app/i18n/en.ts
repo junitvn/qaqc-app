@@ -73,6 +73,15 @@ const en = {
     title: "Select store",
     subtitle: "Choose a store to start inspection",
   },
+  questionnairesScreen: {
+    titleFallback: "Survey questionnaires",
+    subtitle: "Select a report template to start inspection",
+    searchPlaceholder: "Search report templates...",
+    reportTemplatesCount: "{{count}} report templates",
+    noName: "No name",
+    emptyText: "No report templates found",
+    emptySubtext: "Try searching with different keywords",
+  },
   selectStoreComponent: {
     brand: "Brand",
     allBrands: "All Brands",

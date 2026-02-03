@@ -36,9 +36,6 @@ export function HomeScreen({
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollOffset = useScrollOffset(scrollRef);
 
-  console.log('theme', theme);
-  console.log('brands', theme.colors.background);
-
   // Parallax animation for header (with scale)
   const headerAnimatedStyle = useAnimatedStyle(() => {
     return {

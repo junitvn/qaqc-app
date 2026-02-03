@@ -33,7 +33,6 @@ const Stack = createNativeStackNavigator<AppStackParamList>()
 
 const AppStack = () => {
   const { isAuthenticated } = useAuth()
-  console.log("🚀 ~ AppStack ~ isAuthenticated:", isAuthenticated)
 
   const {
     theme: { colors },

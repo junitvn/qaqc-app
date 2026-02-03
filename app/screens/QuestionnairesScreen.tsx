@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Screen } from '@/components/Screen';
 import { CustomHeader } from '@/components/custom-header';
@@ -11,6 +12,7 @@ import type { AppStackScreenProps } from '@/navigators/navigationTypes';
 type QuestionnairesRouteParams = AppStackScreenProps<'Questionnaires'>['route']['params'];
 
 export function QuestionnairesScreen() {
+  const { t } = useTranslation();
   const { theme } = useAppTheme();
   const navigation = useNavigation();
   const route = useRoute();
@@ -33,6 +35,7 @@ export function QuestionnairesScreen() {
 
   const handleQuestionnaireSelect = (questionnaire: Questionnaire) => {
     // Navigate to checklist with questionnaire ID
+    // @ts-ignore
     navigation.navigate('Checklist', {
       questionnaireId: questionnaire.id,
       store: params?.storeName || '',
@@ -43,8 +46,8 @@ export function QuestionnairesScreen() {
   return (
     <Screen preset="scroll" backgroundColor={theme.colors.background}>
       <CustomHeader
-        title={params?.storeName || 'Câu hỏi khảo sát'}
-        subtitle="Chọn mẫu báo cáo để bắt đầu kiểm tra"
+        title={params?.storeName || t('questionnairesScreen.titleFallback')}
+        subtitle={t('questionnairesScreen.subtitle')}
       />
 
       {/* Search Input */}
@@ -58,7 +61,7 @@ export function QuestionnairesScreen() {
               color: theme.colors.text,
             },
           ]}
-          placeholder="Tìm kiếm mẫu báo cáo..."
+          placeholder={t('questionnairesScreen.searchPlaceholder')}
           placeholderTextColor={theme.colors.textDim}
           value={searchQuery}
           onChangeText={setSearchQuery}
@@ -78,7 +81,7 @@ export function QuestionnairesScreen() {
         >
           {/* Results Count */}
           <Text style={[styles.resultsCount, { color: theme.colors.textDim }]}>
-            {filteredQuestionnaires.length} mẫu báo cáo
+            {t('questionnairesScreen.reportTemplatesCount', { count: filteredQuestionnaires.length })}
           </Text>
 
           {/* Questionnaire Cards */}
@@ -113,7 +116,7 @@ export function QuestionnairesScreen() {
                   ]}
                   numberOfLines={2}
                 >
-                  {questionnaire.title || 'Không có tên'}
+                  {questionnaire.title || t('questionnairesScreen.noName')}
                 </Text>
                 {questionnaire.description && (
                   <Text
@@ -144,10 +147,10 @@ export function QuestionnairesScreen() {
             <View style={styles.emptyState}>
               <SearchIcon width={48} height={48} color={theme.colors.textDim} />
               <Text style={[styles.emptyText, { color: theme.colors.textDim }]}>
-                Không tìm thấy mẫu báo cáo
+                {t('questionnairesScreen.emptyText')}
               </Text>
               <Text style={[styles.emptySubtext, { color: theme.colors.textDim }]}>
-                Thử tìm kiếm với từ khóa khác
+                {t('questionnairesScreen.emptySubtext')}
               </Text>
             </View>
           )}
