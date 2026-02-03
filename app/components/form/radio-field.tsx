@@ -49,7 +49,7 @@ export function RadioFieldComponent({
                   />
                 )}
               </View>
-              <Text style={[styles.optionText, { color: theme.colors.text }]}>
+              <Text style={[styles.optionText, { color: isSelected ? theme.colors.tint : theme.colors.text }]}>
                 {option.label}
               </Text>
             </Pressable>

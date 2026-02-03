@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useAppTheme } from '@/theme/context';
 import { ChevronRightIcon, MapPinIcon, SearchIcon } from './icons';
@@ -18,6 +19,7 @@ export function SelectStoreComponent({
   isLoading: isLoadingProp,
   onStoreSelect,
 }: SelectStoreComponentProps) {
+  const { t } = useTranslation();
   const { theme } = useAppTheme();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBrandId, setSelectedBrandId] = useState<string | null>(null);
@@ -29,13 +31,13 @@ export function SelectStoreComponent({
   // Build brand options
   const brandOptions = useMemo(() => {
     if (!brands || !Array.isArray(brands)) {
-      return [{ label: 'All Brands', value: 'all' }];
+      return [{ label: t('selectStoreComponent.allBrands'), value: 'all' }];
     }
     return [
-      { label: 'All Brands', value: 'all' },
+      { label: t('selectStoreComponent.allBrands'), value: 'all' },
       ...brands.map(brand => ({ label: brand.name || 'No name', value: brand.id }))
     ];
-  }, [brands]);
+  }, [brands, t]);
 
   // Get all stores from brands based on selected brand
   const allStoresFromApi = useMemo(() => {
@@ -91,7 +93,7 @@ export function SelectStoreComponent({
       <View style={styles.content}>
         {/* Brand Filter */}
         <View style={styles.filterContainer}>
-          <Text style={[styles.filterTitle, { color: theme.colors.text }]}>Brand</Text>
+          <Text style={[styles.filterTitle, { color: theme.colors.text }]}>{t('selectStoreComponent.brand')}</Text>
           <TouchableOpacity
             style={[
               styles.selectTrigger,
@@ -112,7 +114,7 @@ export function SelectStoreComponent({
               ]}
               numberOfLines={1}
             >
-              {selectedBrandOption?.label || 'Select brand'}
+              {selectedBrandOption?.label || t('selectStoreComponent.selectBrand')}
             </Text>
             <ChevronRightIcon
               width={20}
@@ -143,14 +145,14 @@ export function SelectStoreComponent({
             >
               <View style={[styles.modalHeader, { borderBottomColor: theme.colors.border }]}>
                 <Text style={[styles.modalTitle, { color: theme.colors.text }]}>
-                  Select brand
+                  {t('selectStoreComponent.selectBrand')}
                 </Text>
                 <TouchableOpacity
                   style={styles.closeButton}
                   onPress={() => setIsBrandModalOpen(false)}
                 >
                   <Text style={[styles.closeButtonText, { color: theme.colors.tint }]}>
-                    Close
+                    {t('selectStoreComponent.close')}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -200,7 +202,7 @@ export function SelectStoreComponent({
                 color: theme.colors.text,
               }
             ]}
-            placeholder="Search store..."
+            placeholder={t('selectStoreComponent.searchPlaceholder')}
             placeholderTextColor={theme.colors.textDim}
             value={searchQuery}
             onChangeText={setSearchQuery}
@@ -220,7 +222,7 @@ export function SelectStoreComponent({
           >
             {/* Results Count */}
             <Text style={[styles.resultsCount, { color: theme.colors.textDim }]}>
-              {filteredStores.length} stores
+              {t('selectStoreComponent.storesCount', { count: filteredStores.length })}
             </Text>
 
             {/* Store Cards */}
@@ -286,10 +288,10 @@ export function SelectStoreComponent({
               <View style={styles.emptyState}>
                 <SearchIcon width={48} height={48} color={theme.colors.textDim} />
                 <Text style={[styles.emptyText, { color: theme.colors.textDim }]}>
-                  No store found
+                  {t('selectStoreComponent.noStoreFound')}
                 </Text>
                 <Text style={[styles.emptySubtext, { color: theme.colors.textDim }]}>
-                  {selectedBrandId ? 'Try selecting a different brand or search with a different keyword' : 'Please select a brand to view stores'}
+                  {selectedBrandId ? t('selectStoreComponent.noStoreHintBrand') : t('selectStoreComponent.noStoreHintSelect')}
                 </Text>
               </View>
             )}

@@ -1,4 +1,3 @@
-import demoEn from "./demo-en"
 
 const en = {
   common: {
@@ -42,6 +41,64 @@ const en = {
     passwordFieldPlaceholder: "Super secret password here",
     tapToLogIn: "Tap to log in!",
     hint: "Hint: you can use any email address and your favorite password :)",
+    subtitle: "Sign in to continue",
+    forgotPassword: "Forgot password?",
+    termsOfService: "Terms of Service",
+    privacyPolicy: "Privacy Policy",
+    loginAgree: "By signing in, you agree to our ",
+    loginAnd: " and ",
+    loginFailed: "Login failed",
+    loginError: "An error occurred while signing in",
+  },
+  homeScreen: {
+    greeting: "Hello",
+  },
+  checklistScreen: {
+    title: "Store inspection",
+    store: "Store",
+    reportTemplate: "Report template",
+    reportDate: "Report date",
+    generalNotes: "General notes",
+    notesPlaceholder: 'Example: "Focus on outdoor area and restrooms."',
+    complete: "Complete",
+    submitting: "Submitting...",
+    errorTitle: "Error",
+    fillRequired: "Please fill in all required fields",
+    missingInfo: "Missing questionnaire or store information",
+    submitSuccess: "Success",
+    submitSuccessMessage: "Report submitted successfully",
+    submitError: "Unable to submit report",
+  },
+  selectStoreScreen: {
+    title: "Select store",
+    subtitle: "Choose a store to start inspection",
+  },
+  selectStoreComponent: {
+    brand: "Brand",
+    allBrands: "All Brands",
+    selectBrand: "Select brand",
+    searchPlaceholder: "Search store...",
+    storesCount: "{{count}} stores",
+    noStoreFound: "No store found",
+    noStoreHintBrand: "Try selecting a different brand or search with a different keyword",
+    noStoreHintSelect: "Please select a brand to view stores",
+    close: "Close",
+  },
+  profileScreen: {
+    title: "Profile",
+    loadingProfile: "Loading profile...",
+    firstName: "First Name",
+    lastName: "Last Name",
+    email: "Email",
+    emailVerified: "Email Verified",
+    verified: "Verified",
+    notVerified: "Not Verified",
+    role: "Role",
+    darkMode: "Dark Mode",
+    signOut: "Sign Out",
+    language: "Language",
+    english: "English",
+    vietnamese: "Vietnamese",
   },
   demoNavigator: {
     componentsTab: "Components",
@@ -121,8 +178,6 @@ const en = {
         "No favorites have been added yet. Tap the heart on an episode to add it to your favorites!",
     },
   },
-
-  ...demoEn,
 }
 
 export default en

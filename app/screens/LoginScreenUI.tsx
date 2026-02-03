@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   Alert,
@@ -18,6 +19,7 @@ import { navigate } from '@/navigators/navigationUtilities';
 import { useAuth } from '@/context/AuthContext';
 
 export function LoginScreenUI() {
+  const { t } = useTranslation();
   const { theme } = useAppTheme();
   const { isAuthenticated } = useAuth();
   const [email, setEmail] = useState('admin@san.cafe');
@@ -42,9 +44,9 @@ export function LoginScreenUI() {
       navigate('MainTabs');
     } catch (error) {
       Alert.alert(
-        'Đăng nhập thất bại',
-        error instanceof Error ? error.message : 'Đã xảy ra lỗi khi đăng nhập',
-        [{ text: 'OK' }]
+        t('loginScreen.loginFailed'),
+        error instanceof Error ? error.message : t('loginScreen.loginError'),
+        [{ text: t('common.ok') }]
       );
     }
   };
@@ -70,7 +72,7 @@ export function LoginScreenUI() {
             <View style={styles.titleSection}>
               <Text style={[styles.appTitle, { color: theme.colors.tint }]}>ChainS</Text>
               <Text style={[styles.subtitle, { color: theme.colors.textDim }]}>
-                Đăng nhập để tiếp tục
+                {t('loginScreen.subtitle')}
               </Text>
             </View>
 
@@ -79,7 +81,7 @@ export function LoginScreenUI() {
               {/* Email Input */}
               <View style={styles.inputGroup}>
                 <Text style={[styles.inputLabel, { color: theme.colors.text }]}>
-                  Email
+                  {t('loginScreen.emailFieldLabel')}
                 </Text>
                 <View
                   style={[
@@ -96,7 +98,7 @@ export function LoginScreenUI() {
                 >
                   <TextInput
                     style={[styles.input, { color: theme.colors.text }]}
-                    placeholder="Nhập địa chỉ email"
+                    placeholder={t('loginScreen.emailFieldPlaceholder')}
                     placeholderTextColor={theme.colors.textDim}
                     value={email}
                     onChangeText={setEmail}
@@ -113,7 +115,7 @@ export function LoginScreenUI() {
               {/* Password Input */}
               <View style={styles.inputGroup}>
                 <Text style={[styles.inputLabel, { color: theme.colors.text }]}>
-                  Mật khẩu
+                  {t('loginScreen.passwordFieldLabel')}
                 </Text>
                 <View
                   style={[
@@ -130,7 +132,7 @@ export function LoginScreenUI() {
                 >
                   <TextInput
                     style={[styles.input, { color: theme.colors.text }]}
-                    placeholder="Nhập mật khẩu"
+                    placeholder={t('loginScreen.passwordFieldPlaceholder')}
                     placeholderTextColor={theme.colors.textDim}
                     value={password}
                     onChangeText={setPassword}
@@ -150,7 +152,7 @@ export function LoginScreenUI() {
                 style={styles.forgotPasswordButton}
               >
                 <Text style={[styles.forgotPasswordText, { color: theme.colors.tint }]}>
-                  Quên mật khẩu?
+                  {t('loginScreen.forgotPassword')}
                 </Text>
               </TouchableOpacity>
 
@@ -167,24 +169,26 @@ export function LoginScreenUI() {
                 {signInMutation.isPending ? (
                   <ActivityIndicator color="#FFFFFF" />
                 ) : (
-                  <Text style={styles.loginButtonText}>Đăng nhập</Text>
+                  <Text style={styles.loginButtonText}>{t('loginScreen.logIn')}</Text>
                 )}
               </TouchableOpacity>
 
               {/* Footer Text */}
               <View style={styles.footer}>
                 <Text style={[styles.footerText, { color: theme.colors.textDim }]}>
-                  Bằng cách đăng nhập, bạn đồng ý với{' '}
+                  {t('loginScreen.loginAgree')}
                 </Text>
                 <TouchableOpacity>
                   <Text style={[styles.footerLink, { color: theme.colors.tint }]}>
-                    Điều khoản dịch vụ
+                    {t('loginScreen.termsOfService')}
                   </Text>
                 </TouchableOpacity>
-                <Text style={[styles.footerText, { color: theme.colors.textDim }]}> và </Text>
+                <Text style={[styles.footerText, { color: theme.colors.textDim }]}>
+                  {t('loginScreen.loginAnd')}
+                </Text>
                 <TouchableOpacity>
                   <Text style={[styles.footerLink, { color: theme.colors.tint }]}>
-                    Chính sách bảo mật
+                    {t('loginScreen.privacyPolicy')}
                   </Text>
                 </TouchableOpacity>
               </View>

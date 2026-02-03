@@ -82,4 +82,13 @@ export const colors = {
    * Error Background.
    */
   errorBackground: palette.angry100,
+  
+  /**
+   * Text with background color.
+   */
+  textWithBackground: palette.neutral800,
+  /**
+   * Text with background dim color.
+   */
+  textWithBackgroundDim: palette.neutral600,
 } as const

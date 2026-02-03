@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Screen } from '@/components/Screen';
@@ -18,6 +19,7 @@ import alert from '@/components/alert/alert';
 type ChecklistRouteParams = AppStackScreenProps<'Checklist'>['route']['params'];
 
 export function ChecklistScreen() {
+  const { t } = useTranslation();
   const { theme } = useAppTheme();
   const navigation = useNavigation();
   const route = useRoute();
@@ -121,12 +123,12 @@ export function ChecklistScreen() {
   // Handle form submission
   const handleSubmit = useCallback(async () => {
     if (!isFormValid) {
-      Alert.alert('Lỗi', 'Vui lòng điền đầy đủ các trường bắt buộc');
+      Alert.alert(t('checklistScreen.errorTitle'), t('checklistScreen.fillRequired'));
       return;
     }
 
     if (!params?.questionnaireId || !params?.storeId) {
-      Alert.alert('Lỗi', 'Thiếu thông tin questionnaire hoặc store');
+      Alert.alert(t('checklistScreen.errorTitle'), t('checklistScreen.missingInfo'));
       return;
     }
 
@@ -153,16 +155,16 @@ export function ChecklistScreen() {
         data: submissionData,
         isTest: false,
       });
-      alert('Thành công', 'Đã gửi báo cáo thành công', [
+      alert(t('checklistScreen.submitSuccess'), t('checklistScreen.submitSuccessMessage'), [
         {
-          text: 'OK',
+          text: t('common.ok'),
           onPress: () => navigation.goBack(),
         },
       ], undefined);
     } catch (error) {
-      Alert.alert('Lỗi', error instanceof Error ? error.message : 'Không thể gửi báo cáo');
+      Alert.alert(t('checklistScreen.errorTitle'), error instanceof Error ? error.message : t('checklistScreen.submitError'));
     }
-  }, [isFormValid, params, formValues, formFields, questionnaireData, submitMutation, navigation]);
+  }, [isFormValid, params, formValues, formFields, questionnaireData, submitMutation, navigation, t]);
 
   if (isLoading) {
     return (
@@ -177,7 +179,7 @@ export function ChecklistScreen() {
   return (
     <Screen preset="scroll" backgroundColor={theme.colors.background}>
       <CustomHeader
-        title="Kiểm tra cửa hàng"
+        title={t('checklistScreen.title')}
         progressColor={theme.colors.tint}
         totalSteps={progress.totalSteps}
         currentStep={progress.currentStep}
@@ -191,10 +193,10 @@ export function ChecklistScreen() {
           {/* Store Information */}
           {params?.store && (
             <View style={styles.infoRow}>
-              <Text style={[styles.label, { color: theme.colors.textDim }]}>
-                Cửa hàng
+              <Text style={[styles.label, { color: theme.colors.textWithBackgroundDim }]}>
+                {t('checklistScreen.store')}
               </Text>
-              <Text style={[styles.value, { color: theme.colors.text }]}>
+              <Text style={[styles.value, { color: theme.colors.textWithBackground }]}>
                 {params.store}
               </Text>
             </View>
@@ -202,20 +204,20 @@ export function ChecklistScreen() {
 
           {/* Report Template */}
           <View style={styles.infoRow}>
-            <Text style={[styles.label, { color: theme.colors.textDim }]}>
-              Mẫu báo cáo
+            <Text style={[styles.label, { color: theme.colors.textWithBackgroundDim }]}>
+              {t('checklistScreen.reportTemplate')}
             </Text>
-            <Text style={[styles.value, { color: theme.colors.text }]}>
+            <Text style={[styles.value, { color: theme.colors.textWithBackground }]}>
               {questionnaireData?.data?.title || 'Không có tên'}
             </Text>
           </View>
 
           {/* Report Date */}
           <View style={styles.infoRow}>
-            <Text style={[styles.label, { color: theme.colors.textDim }]}>
-              Ngày báo cáo
+            <Text style={[styles.label, { color: theme.colors.textWithBackgroundDim }]}>
+              {t('checklistScreen.reportDate')}
             </Text>
-            <Text style={[styles.value, { color: theme.colors.text }]}>
+            <Text style={[styles.value, { color: theme.colors.textWithBackground }]}>
               {questionnaireData?.data?.createdAt
                 ? format(new Date(questionnaireData.data.createdAt), 'dd/MM/yyyy HH:mm')
                 : 'N/A'}
@@ -225,7 +227,7 @@ export function ChecklistScreen() {
         <Gap size={16} />
         {/* General notes */}
         <View>
-          <Collapsible defaultOpen={true} title="Ghi chú chung">
+          <Collapsible defaultOpen={true} title={t('checklistScreen.generalNotes')}>
             <TextInput
               style={[
                 styles.textArea,
@@ -237,7 +239,7 @@ export function ChecklistScreen() {
               ]}
               value={generalNote}
               onChangeText={setGeneralNote}
-              placeholder={`Ví dụ: "Cần chú trọng khu vực ngoài trời và nhà vệ sinh."`}
+              placeholder={t('checklistScreen.notesPlaceholder')}
               placeholderTextColor={theme.colors.textDim}
               multiline
               maxLength={500}
@@ -274,7 +276,7 @@ export function ChecklistScreen() {
             <ActivityIndicator size="small" color="#FFFFFF" />
           ) : (
             <Text style={styles.submitButtonText}>
-              {submitMutation.isPending ? 'Đang gửi...' : 'Hoàn thành'}
+              {submitMutation.isPending ? t('checklistScreen.submitting') : t('checklistScreen.complete')}
             </Text>
           )}
         </Pressable>

@@ -1,12 +1,19 @@
 import React from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Screen } from '@/components/Screen';
-import { TicketComponent } from '@/components/ticket-component';
+import { useTranslation } from 'react-i18next';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
+import Animated, {
+  interpolate,
+  useAnimatedRef,
+  useAnimatedStyle,
+  useScrollOffset,
+} from 'react-native-reanimated';
 import { SelectStoreComponent } from '@/components/select-store-component';
 import { LogoutIcon, SettingsIcon } from '@/components/icons';
 import { useAppTheme } from '@/theme/context';
 import { useBrandsData } from '@/hooks/use-brands-api';
 import { navigate } from '@/navigators/navigationUtilities';
+import { Image } from 'expo-image';
 
 interface HomeScreenProps {
   showHeader?: boolean;
@@ -23,8 +30,32 @@ export function HomeScreen({
   onSettingsPress,
   onLogoutPress,
 }: HomeScreenProps) {
+  const { t } = useTranslation();
   const { theme } = useAppTheme();
   const { data: brands } = useBrandsData();
+  const scrollRef = useAnimatedRef<Animated.ScrollView>();
+  const scrollOffset = useScrollOffset(scrollRef);
+
+  console.log('theme', theme);
+  console.log('brands', theme.colors.background);
+
+  // Parallax animation for header (with scale)
+  const headerAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          translateY: interpolate(
+            scrollOffset.value,
+            [-HEADER_HEIGHT, 0, HEADER_HEIGHT],
+            [-HEADER_HEIGHT / 2, 0, HEADER_HEIGHT * 0.75]
+          ),
+        },
+        {
+          scale: interpolate(scrollOffset.value, [-HEADER_HEIGHT, 0, HEADER_HEIGHT], [2, 1, 1]),
+        },
+      ],
+    };
+  });
 
   const handleStoreSelect = (store: { id: string; name: string; code?: string }) => {
     // Find the brand that contains this store
@@ -40,23 +71,43 @@ export function HomeScreen({
   };
 
   return (
-    <Screen preset="scroll" backgroundColor={theme.colors.background}>
-      <View style={styles.container}>
-        {/* Header */}
-        <View
+    <View style={styles.container}>
+      <Animated.ScrollView
+        ref={scrollRef}
+        style={{ backgroundColor: 'transparent', flex: 1 }}
+        scrollEventThrottle={16}
+      >
+        {/* Header with parallax (scales) */}
+        <Animated.View
           style={[
             styles.header,
             { backgroundColor: theme.colors.tint },
+            headerAnimatedStyle,
           ]}
         >
           <View style={styles.headerWrapper}>
+            <Image
+              source={require('@assets/images/header.png')}
+              style={styles.headerImage}
+              contentFit="cover"
+            />
             <View style={[styles.colorOverlay, { backgroundColor: theme.colors.tint, opacity: 0.3 }]} />
+            <Svg style={styles.gradientOverlay} width="100%" height="100%" preserveAspectRatio="none">
+              <Defs>
+                <LinearGradient id="headerGradient" x1="0%" y1="100%" x2="0%" y2="0%">
+                  <Stop offset="0" stopColor={theme.colors.tint} stopOpacity="0" />
+                  <Stop offset="0.36" stopColor={theme.colors.tint} stopOpacity="0" />
+                  <Stop offset="1" stopColor={theme.colors.tint} stopOpacity="1" />
+                </LinearGradient>
+              </Defs>
+              <Rect x="0" y="0" width="100%" height="100%" fill="url(#headerGradient)" />
+            </Svg>
           </View>
-        </View>
+        </Animated.View>
 
         {/* Greeting Section */}
         <View style={styles.greetingContainer}>
-          <Text style={styles.greetingText}>Xin chào</Text>
+          <Text style={styles.greetingText}>{t('homeScreen.greeting')}</Text>
           <Text style={styles.userName}>{userName}</Text>
         </View>
 
@@ -86,14 +137,15 @@ export function HomeScreen({
         <View style={[styles.content, { backgroundColor: theme.colors.background }]}>
           <SelectStoreComponent onStoreSelect={handleStoreSelect} />
         </View>
-      </View>
-    </Screen>
+      </Animated.ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#FFFFFF',
   },
   header: {
     height: HEADER_HEIGHT,
@@ -106,6 +158,13 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   colorOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+  },
+  gradientOverlay: {
     position: 'absolute',
     top: 0,
     left: 0,
@@ -178,5 +237,12 @@ const styles = StyleSheet.create({
     height: 44,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  headerImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
   },
 });

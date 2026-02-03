@@ -4,20 +4,33 @@ import i18n from "i18next"
 import { initReactI18next } from "react-i18next"
 import "intl-pluralrules"
 
-// if English isn't your default language, move Translations to the appropriate language file.
-import ar from "./ar"
-import en, { Translations } from "./en"
-import es from "./es"
-import fr from "./fr"
-import hi from "./hi"
-import ja from "./ja"
-import ko from "./ko"
+import * as storage from "../utils/storage"
+import { loadDateFnsLocale } from "../utils/formatDate"
 
-const fallbackLocale = "en-US"
+// if English isn't your default language, move Translations to the appropriate language file.
+import en, { Translations } from "./en"
+import vi from "./vi"
+
+const LANGUAGE_STORAGE_KEY = "APP_LANGUAGE"
+const fallbackLocale = "en"
 
 const systemLocales = Localization.getLocales()
 
-const resources = { ar, en, ko, es, fr, ja, hi }
+// i18next expects resources under the default "translation" namespace.
+// Components using "namespace:key" format (e.g. emptyStateComponent:generic.heading)
+// need those namespaces defined separately.
+const resources = {
+  en: {
+    translation: en,
+    emptyStateComponent: en.emptyStateComponent,
+    demoPodcastListScreen: en.demoPodcastListScreen,
+  },
+  vi: {
+    translation: vi,
+    emptyStateComponent: vi.emptyStateComponent,
+    demoPodcastListScreen: vi.demoPodcastListScreen,
+  },
+}
 const supportedTags = Object.keys(resources)
 
 // Checks to see if the device locale matches any of the supported locales
@@ -43,12 +56,42 @@ if (locale?.languageTag && locale?.textDirection === "rtl") {
   I18nManager.allowRTL(false)
 }
 
+/**
+ * Get initial language: saved preference > device locale > fallback
+ */
+const getInitialLanguage = (): string => {
+  const saved = storage.loadString(LANGUAGE_STORAGE_KEY)
+  if (saved && supportedTags.includes(saved)) {
+    return saved
+  }
+  const deviceLocale = pickSupportedLocale()
+  if (deviceLocale) {
+    const primaryTag = deviceLocale.languageTag.split("-")[0]
+    return supportedTags.includes(primaryTag) ? primaryTag : fallbackLocale
+  }
+  return fallbackLocale
+}
+
+/**
+ * Change app language and persist preference
+ */
+export const changeLanguage = async (languageCode: string): Promise<void> => {
+  const code = languageCode.split("-")[0]
+  if (supportedTags.includes(code)) {
+    storage.saveString(LANGUAGE_STORAGE_KEY, code)
+    await i18n.changeLanguage(code)
+    loadDateFnsLocale()
+  }
+}
+
 export const initI18n = async () => {
   i18n.use(initReactI18next)
 
+  const initialLng = getInitialLanguage()
+
   await i18n.init({
     resources,
-    lng: locale?.languageTag ?? fallbackLocale,
+    lng: initialLng,
     fallbackLng: fallbackLocale,
     interpolation: {
       escapeValue: false,
@@ -82,7 +125,7 @@ type RecursiveKeyOfHandleValue<
 > = TValue extends any[]
   ? Text
   : TValue extends object
-    ? IsFirstLevel extends true
-      ? Text | `${Text}:${RecursiveKeyOfInner<TValue>}`
-      : Text | `${Text}.${RecursiveKeyOfInner<TValue>}`
-    : Text
+  ? IsFirstLevel extends true
+  ? Text | `${Text}:${RecursiveKeyOfInner<TValue>}`
+  : Text | `${Text}.${RecursiveKeyOfInner<TValue>}`
+  : Text

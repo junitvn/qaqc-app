@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Screen } from '@/components/Screen';
@@ -8,6 +9,7 @@ import { useAppTheme } from '@/theme/context';
 import { useBrandsData } from '@/hooks/use-brands-api';
 
 export function SelectStoreScreen() {
+  const { t } = useTranslation();
   const { theme } = useAppTheme();
   const navigation = useNavigation();
   const { data: brands } = useBrandsData();
@@ -28,8 +30,8 @@ export function SelectStoreScreen() {
   return (
     <Screen preset="scroll" backgroundColor={theme.colors.background}>
       <CustomHeader
-        title="Lựa chọn cửa hàng"
-        subtitle="Chọn cửa hàng để bắt đầu kiểm tra"
+        title={t('selectStoreScreen.title')}
+        subtitle={t('selectStoreScreen.subtitle')}
       />
       <View style={{ flex: 1 }}>
         <SelectStoreComponent onStoreSelect={handleStoreSelect} />

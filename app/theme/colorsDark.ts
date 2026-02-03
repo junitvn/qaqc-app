@@ -47,4 +47,6 @@ export const colors = {
   separator: palette.neutral300,
   error: palette.angry500,
   errorBackground: palette.angry100,
+  textWithBackground: palette.neutral300,
+  textWithBackgroundDim: palette.neutral400,
 } as const

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Image } from 'expo-image';
 import { Screen } from '@/components/Screen';
@@ -8,6 +9,7 @@ import { Switch } from '@/components/Toggle/Switch';
 import { useAppTheme } from '@/theme/context';
 import { useAuth } from '@/context/AuthContext';
 import { useSignOut } from '@/hooks/use-auth-api';
+import { changeLanguage } from '@/i18n';
 
 interface ProfileScreenProps {
   onSettingsPress?: () => void;
@@ -16,6 +18,7 @@ interface ProfileScreenProps {
 export function ProfileScreen({
   onSettingsPress,
 }: ProfileScreenProps) {
+  const { t, i18n } = useTranslation();
   const { theme, themeContext, setThemeContextOverride } = useAppTheme();
   const { session } = useAuth();
   const { mutate: signOut, isPending: isSigningOut } = useSignOut();
@@ -29,18 +32,24 @@ export function ProfileScreen({
   const user = session?.user;
   const isLoading = !session && !isSigningOut;
 
+  const currentLang = i18n.language?.split('-')[0] || 'en';
+
+  const handleLanguageChange = (lang: 'en' | 'vi') => {
+    changeLanguage(lang);
+  };
+
   if (!user && isLoading) {
     return (
       <Screen preset="fixed" backgroundColor={theme.colors.background}>
         <CustomHeader
-          title="Profile"
+          title={t('profileScreen.title')}
           showBackButton={false}
           rightIcon={<SettingsIcon width={24} height={24} color={'transparent'} />}
           onRightPress={onSettingsPress}
         />
         <View style={styles.loadingContainer}>
           <Text style={[styles.loadingText, { color: theme.colors.error }]}>
-            Loading profile...
+            {t('profileScreen.loadingProfile')}
           </Text>
         </View>
       </Screen>
@@ -50,7 +59,7 @@ export function ProfileScreen({
   return (
     <Screen preset="scroll" backgroundColor={theme.colors.background}>
       <CustomHeader
-        title="Profile"
+        title={t('profileScreen.title')}
         showBackButton={false}
         rightIcon={<SettingsIcon width={24} height={24} color={'transparent'} />}
         onRightPress={onSettingsPress}
@@ -76,25 +85,25 @@ export function ProfileScreen({
         <View style={styles.infoSection}>
           {/* First Name */}
           <View style={styles.infoRow}>
-            <Text style={[styles.infoLabel, { color: theme.colors.textDim }]}>First Name</Text>
+            <Text style={[styles.infoLabel, { color: theme.colors.textDim }]}>{t('profileScreen.firstName')}</Text>
             <Text style={[styles.infoValue, { color: theme.colors.text }]}>{user?.firstName || 'N/A'}</Text>
           </View>
 
           {/* Last Name */}
           <View style={[styles.infoRow, styles.infoRowBorder, { borderColor: theme.colors.border }]}>
-            <Text style={[styles.infoLabel, { color: theme.colors.textDim }]}>Last Name</Text>
+            <Text style={[styles.infoLabel, { color: theme.colors.textDim }]}>{t('profileScreen.lastName')}</Text>
             <Text style={[styles.infoValue, { color: theme.colors.text }]}>{user?.lastName || 'N/A'}</Text>
           </View>
 
           {/* Email */}
           <View style={[styles.infoRow, styles.infoRowBorder, { borderColor: theme.colors.border }]}>
-            <Text style={[styles.infoLabel, { color: theme.colors.textDim }]}>Email</Text>
+            <Text style={[styles.infoLabel, { color: theme.colors.textDim }]}>{t('profileScreen.email')}</Text>
             <Text style={[styles.infoValue, { color: theme.colors.text }]}>{user?.email || 'N/A'}</Text>
           </View>
 
           {/* Email Verified */}
           <View style={[styles.infoRow, styles.infoRowBorder, { borderColor: theme.colors.border }]}>
-            <Text style={[styles.infoLabel, { color: theme.colors.textDim }]}>Email Verified</Text>
+            <Text style={[styles.infoLabel, { color: theme.colors.textDim }]}>{t('profileScreen.emailVerified')}</Text>
             <View style={styles.verifiedContainer}>
               <View
                 style={[
@@ -114,22 +123,61 @@ export function ProfileScreen({
                   },
                 ]}
               >
-                {user?.emailVerified ? 'Verified' : 'Not Verified'}
+                {user?.emailVerified ? t('profileScreen.verified') : t('profileScreen.notVerified')}
               </Text>
             </View>
           </View>
 
           {/* Role */}
           <View style={[styles.infoRow, styles.infoRowBorder, { borderColor: theme.colors.border }]}>
-            <Text style={[styles.infoLabel, { color: theme.colors.textDim }]}>Role</Text>
+            <Text style={[styles.infoLabel, { color: theme.colors.textDim }]}>{t('profileScreen.role')}</Text>
             <View style={[styles.roleBadge, { backgroundColor: theme.colors.tint }]}>
               <Text style={styles.roleText}>{user?.role || 'N/A'}</Text>
             </View>
           </View>
 
+          {/* Language */}
+          <View style={[styles.infoRow, styles.infoRowBorder, { borderColor: theme.colors.border }]}>
+            <Text style={[styles.infoLabel, { color: theme.colors.textDim }]}>{t('profileScreen.language')}</Text>
+            <View style={styles.languageSwitch}>
+              <TouchableOpacity
+                style={[
+                  styles.languageOption,
+                  currentLang === 'en' && { backgroundColor: theme.colors.tint },
+                ]}
+                onPress={() => handleLanguageChange('en')}
+              >
+                <Text
+                  style={[
+                    styles.languageOptionText,
+                    { color: currentLang === 'en' ? '#FFFFFF' : theme.colors.text },
+                  ]}
+                >
+                  {t('profileScreen.english')}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.languageOption,
+                  currentLang === 'vi' && { backgroundColor: theme.colors.tint },
+                ]}
+                onPress={() => handleLanguageChange('vi')}
+              >
+                <Text
+                  style={[
+                    styles.languageOptionText,
+                    { color: currentLang === 'vi' ? '#FFFFFF' : theme.colors.text },
+                  ]}
+                >
+                  {t('profileScreen.vietnamese')}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
           {/* Theme Mode */}
           <View style={[styles.infoRow, styles.infoRowBorder, { borderColor: theme.colors.border }]}>
-            <Text style={[styles.infoLabel, { color: theme.colors.textDim }]}>Dark Mode</Text>
+            <Text style={[styles.infoLabel, { color: theme.colors.textDim }]}>{t('profileScreen.darkMode')}</Text>
             <Switch
               value={isDarkMode}
               onValueChange={handleThemeToggle}
@@ -144,12 +192,12 @@ export function ProfileScreen({
           onPress={() => signOut()}
           disabled={isSigningOut}
           accessibilityRole="button"
-          accessibilityLabel="Sign out"
+          accessibilityLabel={t('profileScreen.signOut')}
         >
           {isSigningOut ? (
             <ActivityIndicator color="#FFFFFF" />
           ) : (
-            <Text style={styles.signOutButtonText}>Sign Out</Text>
+            <Text style={styles.signOutButtonText}>{t('profileScreen.signOut')}</Text>
           )}
         </TouchableOpacity>
       </ScrollView>
@@ -225,6 +273,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 4,
     borderRadius: 12,
+  },
+  languageSwitch: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  languageOption: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
+  },
+  languageOptionText: {
+    fontSize: 14,
+    fontWeight: '600',
   },
   roleText: {
     fontSize: 14,

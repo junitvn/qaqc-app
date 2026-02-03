@@ -20,6 +20,10 @@ export function MainTabNavigator() {
         tabBarInactiveTintColor: colors.textDim,
         tabBarStyle: {
           borderTopColor: colors.border,
+          height: 72,
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
         },
       }}
     >

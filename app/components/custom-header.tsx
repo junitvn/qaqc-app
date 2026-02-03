@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    height: 56, // Standard header height
+    height: 64, // Standard header height
     paddingHorizontal: 12,
   },
   leftSection: {
@@ -243,6 +243,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 12,
+    gap: 4
   },
   title: {
     fontSize: 18,
@@ -297,5 +298,6 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     textAlign: 'center',
     marginBottom: 4,
+    minWidth: 120,
   },
 });
