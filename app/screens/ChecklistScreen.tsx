@@ -168,11 +168,9 @@ export function ChecklistScreen() {
 
   if (isLoading) {
     return (
-      <Screen preset="fixed" backgroundColor={theme.colors.background}>
-        <View style={[styles.loadingContainer, { backgroundColor: theme.colors.background }]}>
-          <ActivityIndicator size="large" color={theme.colors.tint} />
-        </View>
-      </Screen>
+      <View style={[styles.loadingContainer, { backgroundColor: theme.colors.background }]}>
+        <ActivityIndicator size="large" color={theme.colors.tint} />
+      </View>
     );
   }
 
@@ -298,6 +296,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'red',
   },
   card: {
     borderRadius: 12,

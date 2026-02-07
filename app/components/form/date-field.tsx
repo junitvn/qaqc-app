@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
-import { Alert, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, Platform, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { DatePickerInput } from 'react-native-paper-dates';
 
 import { Text } from '@/components/Text';
 import { useAppTheme } from '@/theme/context';
@@ -105,6 +106,48 @@ export function DateFieldComponent({
     setShowPicker(false);
   };
 
+  // For web, use react-native-paper-dates DatePickerInput
+  if (Platform.OS === 'web') {
+    return (
+      <View style={styles.container}>
+        <FormHeader title={field.label} helpText={field.helpText} required={field.required} />
+        <DatePickerInput
+          locale="en"
+          value={selectedDate || undefined}
+          onChange={(date) => {
+            if (date) {
+              setSelectedDate(date);
+              onChange(date.toISOString());
+            }
+          }}
+          inputMode="start"
+          presentationStyle='pageSheet'
+          mode="outlined"
+          style={[
+            styles.input,
+            {
+              backgroundColor,
+            },
+          ]}
+          outlineColor={borderColor}
+          activeOutlineColor={theme.colors.tint}
+          textColor={textColor}
+          validRange={
+            field.minDate || field.maxDate
+              ? {
+                  startDate: field.minDate,
+                  endDate: field.maxDate,
+                  disabledDates: undefined,
+                }
+              : undefined
+          }
+        />
+        {error && <Text style={[styles.error, { color: theme.colors.error }]}>{error}</Text>}
+      </View>
+    );
+  }
+
+  // For native (iOS/Android), use the existing react-native-date-picker
   return (
     <View style={styles.container}>
       <FormHeader title={field.label} helpText={field.helpText} required={field.required} />
@@ -180,10 +223,8 @@ const styles = StyleSheet.create({
         marginBottom: 6,
     },
     input: {
-        borderWidth: 1.5,
         borderRadius: 12,
-        paddingHorizontal: 16,
-        paddingVertical: 14,
+        paddingHorizontal: 0,
         fontSize: 16,
     },
     inputText: {

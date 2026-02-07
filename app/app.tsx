@@ -24,6 +24,7 @@ import * as Linking from "expo-linking"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { KeyboardProvider } from "react-native-keyboard-controller"
 import { initialWindowMetrics, SafeAreaProvider } from "react-native-safe-area-context"
+import { PaperProvider } from "react-native-paper"
 
 import { AuthProvider } from "./context/AuthContext"
 import { initI18n } from "./i18n"
@@ -107,17 +108,19 @@ export function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-        <KeyboardProvider>
-          <AuthProvider>
-            <ThemeProvider>
-              <AppNavigator
-                linking={linking}
-                initialState={initialNavigationState}
-                onStateChange={onNavigationStateChange}
-              />
-            </ThemeProvider>
-          </AuthProvider>
-        </KeyboardProvider>
+        <PaperProvider>
+          <KeyboardProvider>
+            <AuthProvider>
+              <ThemeProvider>
+                <AppNavigator
+                  linking={linking}
+                  initialState={initialNavigationState}
+                  onStateChange={onNavigationStateChange}
+                />
+              </ThemeProvider>
+            </AuthProvider>
+          </KeyboardProvider>
+        </PaperProvider>
       </SafeAreaProvider>
     </QueryClientProvider>
   )

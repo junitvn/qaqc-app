@@ -46,6 +46,7 @@ export function FormFieldsRenderer({
         return <CheckboxFieldComponent key={field.id} {...commonProps} field={field} />;
 
       case 'date':
+        return <DateFieldComponent key={field.id} {...commonProps} field={field as any} />;
         return Platform.OS === 'web'
           ? <TextFieldComponent key={field.id} {...commonProps} field={field as any} />
           : <DateFieldComponent key={field.id} {...commonProps} field={field as any} />;
